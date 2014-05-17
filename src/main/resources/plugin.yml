@@ -1,0 +1,78 @@
+name: ${project.name}
+version: ${project.version}
+main: com.github.ucchyocean.cte.ColorTeamingEntry
+description: ColorTeamingエントリーシステム
+author: ucchy
+depend: [ColorTeaming]
+
+commands:
+  colorentry:
+    description: エントリーコマンド
+    aliases: [centry]
+    usage: |
+           /<command> join - ゲームにエントリーする
+           /<command> leave - ゲームのエントリーから離脱する
+           /<command> list - ゲームにエントリーしているメンバーの一覧を表示する
+           /<command> announce - ゲームにエントリーしているメンバーをアナウンスする
+           /<command> open - ゲームのエントリーを開始する
+           /<command> close - ゲームのエントリーを終了する
+           /<command> team - エントリーしているメンバーでチームを作成する
+           /<command> reload - 設定とメッセージを再読み込みする
+    permission: centry.command
+    permission-message: 'コマンドを実行する権限（<permission>）がありません。'
+
+permissions:
+  centry.command:
+    description: Allows to use command.
+    default: true
+  centry.join:
+    description: Allows to use join command.
+    default: true
+  centry.join.self:
+    description: Allows to use join command for self.
+    default: true
+  centry.leave:
+    description: Allows to use leave command.
+    default: true
+  centry.leave.self:
+    description: Allows to use leave command for self.
+    default: true
+  centry.list:
+    description: Allows to use list command.
+    default: true
+  centry.join.other:
+    description: Allows to use join command for other player.
+    default: op
+  centry.leave.other:
+    description: Allows to use leave command for other player.
+    default: op
+  centry.announce:
+    description: Allows to use announce command.
+    default: op
+  centry.open:
+    description: Allows to use open command.
+    default: op
+  centry.close:
+    description: Allows to use close command.
+    default: op
+  centry.team:
+    description: Allows to use team command.
+    default: op
+  centry.reload:
+    description: Allows to use reload command.
+    default: op
+  'centry.*':
+    children:
+      centry.command: true
+      centry.join: true
+      centry.join.self: true
+      centry.join.other: true
+      centry.leave: true
+      centry.leave.self: true
+      centry.leave.other: true
+      centry.list: true
+      centry.announce: true
+      centry.open: true
+      centry.close: true
+      centry.team: true
+      centry.reload: true
