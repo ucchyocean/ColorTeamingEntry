@@ -17,6 +17,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 /**
@@ -51,9 +52,16 @@ public class ColorTeamingEntry extends JavaPlugin implements Listener {
         // コンフィグのロード
         reloadConfiguration();
 
-        // ColorTeamingの取得
-        ctbridge = new ColorTeamingBridge(
-                getServer().getPluginManager().getPlugin("ColorTeaming"));
+        // ColorTeamingの取得、dependに指定しているので必ず取得できる。
+        Plugin colorteaming = getServer().getPluginManager().getPlugin("ColorTeaming");
+        String ctversion = colorteaming.getDescription().getVersion();
+        if ( !Utility.isUpperVersion(ctversion, "2.3.0") ) {
+            getLogger().warning("ColorTeaming のバージョンが古いため、ColorTeamingTeamSign が使用できません。");
+            getLogger().warning("ColorTeaming v2.3.0 以降のバージョンをご利用ください。");
+            getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
+        ctbridge = new ColorTeamingBridge(colorteaming);
 
         // コマンドの生成
         cecommand = new ColorTeamingEntryCommand(this);
