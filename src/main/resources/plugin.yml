@@ -40,6 +40,9 @@ permissions:
   centry.list:
     description: Allows to use list command.
     default: true
+  centry.sign.use:
+    description: Allows to use entry sign.
+    default: true
   centry.join.other:
     description: Allows to use join command for other player.
     default: op
@@ -61,6 +64,21 @@ permissions:
   centry.reload:
     description: Allows to use reload command.
     default: op
+  centry.sign.toggle:
+    description: Allows to toggle enable/disable entry sign.
+    default: op
+  centry.sign.place:
+    description: Allows to place entry sign.
+    default: op
+  centry.sign.break:
+    description: Allows to break entry sign.
+    default: op
+  'centry.sign.*':
+    children:
+      centry.sign.use: true
+      centry.sign.toggle: true
+      centry.sign.place: true
+      centry.sign.break: true
   'centry.*':
     children:
       centry.command: true
@@ -76,3 +94,7 @@ permissions:
       centry.close: true
       centry.team: true
       centry.reload: true
+      centry.sign.use: true
+      centry.sign.toggle: true
+      centry.sign.place: true
+      centry.sign.break: true

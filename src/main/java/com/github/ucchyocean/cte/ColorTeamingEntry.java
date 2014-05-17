@@ -60,6 +60,8 @@ public class ColorTeamingEntry extends JavaPlugin implements Listener {
 
         // イベントの登録
         getServer().getPluginManager().registerEvents(this, this);
+        getServer().getPluginManager().registerEvents(
+                new EntrySignListener(this), this);
     }
 
     /**
