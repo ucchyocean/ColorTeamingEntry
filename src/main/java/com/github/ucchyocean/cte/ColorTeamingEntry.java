@@ -56,7 +56,7 @@ public class ColorTeamingEntry extends JavaPlugin implements Listener {
         Plugin colorteaming = getServer().getPluginManager().getPlugin("ColorTeaming");
         String ctversion = colorteaming.getDescription().getVersion();
         if ( !Utility.isUpperVersion(ctversion, "2.3.0") ) {
-            getLogger().warning("ColorTeaming のバージョンが古いため、ColorTeamingTeamSign が使用できません。");
+            getLogger().warning("ColorTeaming のバージョンが古いため、ColorTeamingEntry が使用できません。");
             getLogger().warning("ColorTeaming v2.3.0 以降のバージョンをご利用ください。");
             getServer().getPluginManager().disablePlugin(this);
             return;
