@@ -347,7 +347,7 @@ public class ColorTeamingEntryCommand implements TabExecutor {
             Player player = getPlayerExact(name);
             if ( player != null ) {
                 player.setPlayerListName(
-                        parent.getEntryColor() + player.getName());
+                        parent.getCTEConfig().getEntryColor() + player.getName());
             } else {
                 offlines.add(name);
             }
@@ -479,7 +479,7 @@ public class ColorTeamingEntryCommand implements TabExecutor {
     private boolean doReload(CommandSender sender, Command command, String label, String[] args) {
 
         Messages.initialize();
-        parent.reloadConfiguration();
+        parent.reloadCTEConfig();
         sendInfoMessage(sender, "info_reload");
         return true;
     }

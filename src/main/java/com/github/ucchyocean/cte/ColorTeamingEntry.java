@@ -9,10 +9,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -32,7 +30,7 @@ public class ColorTeamingEntry extends JavaPlugin implements Listener {
     private boolean isOpen;
     private ColorTeamingBridge ctbridge;
     private ColorTeamingEntryCommand cecommand;
-    private ChatColor entryColor;
+    private ColorTeamingEntryConfig config;
 
     /**
      * コンストラクタ
@@ -50,7 +48,7 @@ public class ColorTeamingEntry extends JavaPlugin implements Listener {
     public void onEnable() {
 
         // コンフィグのロード
-        reloadConfiguration();
+        reloadCTEConfig();
 
         // ColorTeamingの取得、dependに指定しているので必ず取得できる。
         Plugin colorteaming = getServer().getPluginManager().getPlugin("ColorTeaming");
@@ -88,25 +86,6 @@ public class ColorTeamingEntry extends JavaPlugin implements Listener {
         return cecommand.onTabComplete(sender, command, alias, args);
     }
 
-    public void reloadConfiguration() {
-
-        // フォルダが無いなら作成する
-        File folder = this.getDataFolder();
-        if ( !folder.exists() ) {
-            folder.mkdirs();
-        }
-
-        // ファイルが無いなら作成する
-        File file = new File(folder, "config.yml");
-        if ( !file.exists() ) {
-            Utility.copyFileFromJar(this.getFile(), file, "config_ja.yml", false);
-        }
-
-        // 読み込み
-        YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
-        entryColor = Utility.toChatColor(config.getString("entryColor", "gold"));
-    }
-
     /**
      * 現在の参加者リストを取得する
      * @return 参加者リスト
@@ -123,7 +102,7 @@ public class ColorTeamingEntry extends JavaPlugin implements Listener {
     public boolean addParticipant(Player player) {
         if ( !participants.contains(player.getName()) ) {
             participants.add(player.getName());
-            player.setPlayerListName(entryColor + player.getName());
+            player.setPlayerListName(config.getEntryColor() + player.getName());
             return true;
         }
         return false;
@@ -166,7 +145,7 @@ public class ColorTeamingEntry extends JavaPlugin implements Listener {
         // エントリーしているプレイヤーなら、名前色を変更する
         Player player = event.getPlayer();
         if ( participants.contains(player.getName()) ) {
-            player.setPlayerListName(entryColor + player.getName());
+            player.setPlayerListName(config.getEntryColor() + player.getName());
         }
     }
 
@@ -195,11 +174,18 @@ public class ColorTeamingEntry extends JavaPlugin implements Listener {
     }
 
     /**
-     * エントリーカラーを返します。
-     * @return
+     * ColorTeaming Entry のコンフィグデータを取得します。
+     * @return ColorTeamingEntryConfig
      */
-    protected ChatColor getEntryColor() {
-        return entryColor;
+    protected ColorTeamingEntryConfig getCTEConfig() {
+        return config;
+    }
+
+    /**
+     * ColorTeaming Entry のコンフィグデータを再読み込みします。
+     */
+    protected void reloadCTEConfig() {
+        config = ColorTeamingEntryConfig.load(this.getDataFolder(), this.getFile());
     }
 
     /**

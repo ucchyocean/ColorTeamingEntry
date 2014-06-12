@@ -5,3 +5,18 @@
 
 # プレイヤーリスト上で、エントリーした人の名前に付ける色です。
 entryColor: 'gold'
+
+# 自動開始タイマー機能を使用するかどうかです。
+# true = 使用する、false = 使用しない
+autoStartTimer: false
+
+# 自動開始タイマーを起動する人数です。
+# 5 を設定したら、5人がエントリーした段階で、自動開始タイマーが起動します。
+autoStartTimerPlayerNum: 5
+
+# 自動開始タイマーの秒数です。
+# 30 を設定したら、自動開始タイマーが起動してから30秒後にチーム分けが実行されます。
+autoStartTimerSeconds: 30
+
+# 自動開始タイマーが、自動開始を実行した時に、一緒に実行するコマンドです。
+autoStartTimerCommands: ['timer start ColorTeaming']
