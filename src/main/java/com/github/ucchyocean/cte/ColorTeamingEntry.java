@@ -203,4 +203,12 @@ public class ColorTeamingEntry extends JavaPlugin implements Listener {
     protected static File getPluginJarFile() {
         return instance.getFile();
     }
+
+    /**
+     * ColorTeamingEntryのインスタンスを返します。
+     * @return インスタンス
+     */
+    protected static ColorTeamingEntry getInstance() {
+        return instance;
+    }
 }

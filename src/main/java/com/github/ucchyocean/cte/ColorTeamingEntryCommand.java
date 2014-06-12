@@ -30,6 +30,8 @@ public class ColorTeamingEntryCommand implements TabExecutor {
     private String preinfo;
     private String preerr;
 
+    private AutoStartTimer timer;
+
     /**
      * コンストラクタ
      */
@@ -156,11 +158,10 @@ public class ColorTeamingEntryCommand implements TabExecutor {
             boolean result = parent.addParticipant(target);
             if ( !result ) {
                 sendErrorMessage(sender, "error_already_join");
+                return true;
             } else {
                 sendInfoMessage(sender, "info_join");
             }
-
-            return true;
 
         } else {
 
@@ -179,13 +180,23 @@ public class ColorTeamingEntryCommand implements TabExecutor {
             boolean result = parent.addParticipant(target);
             if ( !result ) {
                 sendErrorMessage(sender, "error_already_join_other", target.getName());
+                return true;
             } else {
                 sendInfoMessage(sender, "info_join_other", target.getName());
                 sendInfoMessage(target, "info_join");
             }
-
-            return true;
         }
+
+        // 自動開始タイマーが有効で、既定の参加人数を超えたなら、タイマーを開始する
+        ColorTeamingEntryConfig config = parent.getCTEConfig();
+        if ( config.isAutoStartTimer() && timer == null &&
+                config.getAutoStartTimerPlayerNum() <= parent.getParticipants().size() ) {
+            timer = new AutoStartTimer(
+                    parent, config.getAutoStartTimerSeconds(), config.getAutoStartTimerCommands());
+            timer.startTimer();
+        }
+
+        return true;
     }
 
     /**
@@ -220,11 +231,10 @@ public class ColorTeamingEntryCommand implements TabExecutor {
             boolean result = parent.removeParticipant(target);
             if ( !result ) {
                 sendErrorMessage(sender, "error_already_leave");
+                return true;
             } else {
                 sendInfoMessage(sender, "info_leave");
             }
-
-            return true;
 
         } else {
 
@@ -243,13 +253,23 @@ public class ColorTeamingEntryCommand implements TabExecutor {
             boolean result = parent.removeParticipant(target);
             if ( !result ) {
                 sendErrorMessage(sender, "error_already_leave_other", target.getName());
+                return true;
             } else {
                 sendInfoMessage(sender, "info_leave_other", target.getName());
                 sendInfoMessage(target, "info_leave");
             }
-
-            return true;
         }
+
+        // 自動開始タイマーが動作していて、既定の参加人数を下回ったなら、タイマーをキャンセルする
+        ColorTeamingEntryConfig config = parent.getCTEConfig();
+        if ( timer != null && !timer.isEnd() &&
+                config.getAutoStartTimerPlayerNum() > parent.getParticipants().size() ) {
+            timer.cancel();
+            timer = null;
+            broadcastMessage("auto_start_timer_cancel");
+        }
+
+        return true;
     }
 
     /**
@@ -357,10 +377,22 @@ public class ColorTeamingEntryCommand implements TabExecutor {
             parent.removeParticipant(name);
         }
 
+        // 募集開始
         parent.setOpen(true);
+
+        // 募集開始を通知する
         broadcastMessage("info_open1");
         broadcastMessage("info_open2");
         broadcastMessage("info_open3");
+
+        // 自動開始タイマーが有効で、既に人数を超えているなら、タイマーを作成して開始する
+        ColorTeamingEntryConfig config = parent.getCTEConfig();
+        if ( config.isAutoStartTimer() &&
+                config.getAutoStartTimerPlayerNum() <= parent.getParticipants().size() ) {
+            timer = new AutoStartTimer(
+                    parent, config.getAutoStartTimerSeconds(), config.getAutoStartTimerCommands());
+            timer.startTimer();
+        }
 
         return true;
     }
@@ -396,8 +428,17 @@ public class ColorTeamingEntryCommand implements TabExecutor {
             parent.removeParticipant(name);
         }
 
+        // 募集しめきり
         parent.setOpen(false);
+
+        // 通知する
         broadcastMessage("info_close");
+
+        // タイマーが残っているなら、キャンセルして除去する
+        if ( timer != null && !timer.isEnd() ) {
+            timer.cancel();
+            timer = null;
+        }
 
         return true;
     }
@@ -464,6 +505,12 @@ public class ColorTeamingEntryCommand implements TabExecutor {
 
         // 受け付けを停止する
         parent.setOpen(false);
+
+        // タイマーが残っているなら、キャンセルして除去する
+        if ( timer != null && !timer.isEnd() ) {
+            timer.cancel();
+            timer = null;
+        }
 
         return true;
     }

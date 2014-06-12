@@ -37,3 +37,6 @@ info_close: 'エントリーの受け付けを締め切りました。'
 
 list_first_line: '&5========= 参加者リスト ========'
 list_last_line: '&5==============================='
+
+auto_start_timer_seconds: '自動開始まであと %d秒'
+auto_start_timer_cancel: 'エントリーが規定人数を下回ったため、自動開始タイマーがキャンセルされました。'
