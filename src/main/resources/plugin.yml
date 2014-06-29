@@ -14,7 +14,7 @@ commands:
            /<command> leave - ゲームのエントリーから離脱する
            /<command> list - ゲームにエントリーしているメンバーの一覧を表示する
            /<command> announce - ゲームにエントリーしているメンバーをアナウンスする
-           /<command> open - ゲームのエントリーを開始する
+           /<command> open [CommandConfigName] - ゲームのエントリーを開始する
            /<command> close - ゲームのエントリーを終了する
            /<command> team - エントリーしているメンバーでチームを作成する
            /<command> reload - 設定とメッセージを再読み込みする
