@@ -6,9 +6,11 @@
 package com.github.ucchyocean.cte;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.List;
 
 import org.bukkit.ChatColor;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 /**
@@ -22,6 +24,7 @@ public class ColorTeamingEntryConfig {
     private int autoStartTimerPlayerNum;
     private int autoStartTimerSeconds;
     private List<String> autoStartTimerCommands;
+    private HashMap<String, List<String>> autoStartTimerCommandConfigs;
 
     /**
      * config.yml をロードします。
@@ -50,6 +53,17 @@ public class ColorTeamingEntryConfig {
         conf.autoStartTimerPlayerNum = config.getInt("autoStartTimerPlayerNum", 5);
         conf.autoStartTimerSeconds = config.getInt("autoStartTimerSeconds", 30);
         conf.autoStartTimerCommands = config.getStringList("autoStartTimerCommands");
+
+        // config.getValues() でまとめて取得できるけど、後でキャスト面倒なので、
+        // 1つずつ取得します。。。
+        conf.autoStartTimerCommandConfigs = new HashMap<String, List<String>>();
+        if ( config.contains("autoStartTimerCommandConfigs") ) {
+            ConfigurationSection section =
+                    config.getConfigurationSection("autoStartTimerCommandConfigs");
+            for ( String key : section.getKeys(false) ) {
+                conf.autoStartTimerCommandConfigs.put(key, section.getStringList(key));
+            }
+        }
 
         return conf;
     }
@@ -87,5 +101,12 @@ public class ColorTeamingEntryConfig {
      */
     public List<String> getAutoStartTimerCommands() {
         return autoStartTimerCommands;
+    }
+
+    /**
+     * @return autoStartTimerCommandConfigs
+     */
+    public HashMap<String, List<String>> getAutoStartTimerCommandConfigs() {
+        return autoStartTimerCommandConfigs;
     }
 }

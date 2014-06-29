@@ -191,8 +191,15 @@ public class ColorTeamingEntryCommand implements TabExecutor {
         ColorTeamingEntryConfig config = parent.getCTEConfig();
         if ( config.isAutoStartTimer() && timer == null &&
                 config.getAutoStartTimerPlayerNum() <= parent.getParticipants().size() ) {
-            timer = new AutoStartTimer(
-                    parent, config.getAutoStartTimerSeconds(), config.getAutoStartTimerCommands());
+
+            List<String> commands;
+            if ( args.length >= 2 ) {
+                commands = config.getAutoStartTimerCommandConfigs().get(args[1]);
+            } else {
+                commands = config.getAutoStartTimerCommands();
+            }
+
+            timer = new AutoStartTimer(parent, config.getAutoStartTimerSeconds(), commands);
             timer.startTimer();
         }
 
@@ -266,7 +273,7 @@ public class ColorTeamingEntryCommand implements TabExecutor {
                 config.getAutoStartTimerPlayerNum() > parent.getParticipants().size() ) {
             timer.cancel();
             timer = null;
-            broadcastMessage("auto_start_timer_cancel");
+            broadcastInfoMessage("auto_start_timer_cancel");
         }
 
         return true;
@@ -356,8 +363,18 @@ public class ColorTeamingEntryCommand implements TabExecutor {
      */
     private boolean doOpen(CommandSender sender, Command command, String label, String[] args) {
 
+        // 既にオープンなら、エラー終了
         if ( parent.isOpen() ) {
             sendErrorMessage(sender, "error_already_open");
+            return true;
+        }
+
+        // 引数にコンフィグが指定されていて、
+        // 自動開始タイマー有効かつコマンド設定名が無効なら、エラー終了
+        ColorTeamingEntryConfig config = parent.getCTEConfig();
+        if ( args.length >= 2 && config.isAutoStartTimer() &&
+                !config.getAutoStartTimerCommandConfigs().containsKey(args[1]) ) {
+            sendErrorMessage(sender, "error_not_exist_config");
             return true;
         }
 
@@ -381,16 +398,22 @@ public class ColorTeamingEntryCommand implements TabExecutor {
         parent.setOpen(true);
 
         // 募集開始を通知する
-        broadcastMessage("info_open1");
-        broadcastMessage("info_open2");
-        broadcastMessage("info_open3");
+        broadcastInfoMessage("info_open1");
+        broadcastInfoMessage("info_open2");
+        broadcastInfoMessage("info_open3");
 
         // 自動開始タイマーが有効で、既に人数を超えているなら、タイマーを作成して開始する
-        ColorTeamingEntryConfig config = parent.getCTEConfig();
         if ( config.isAutoStartTimer() &&
                 config.getAutoStartTimerPlayerNum() <= parent.getParticipants().size() ) {
-            timer = new AutoStartTimer(
-                    parent, config.getAutoStartTimerSeconds(), config.getAutoStartTimerCommands());
+
+            List<String> commands;
+            if ( args.length >= 2 ) {
+                commands = config.getAutoStartTimerCommandConfigs().get(args[1]);
+            } else {
+                commands = config.getAutoStartTimerCommands();
+            }
+
+            timer = new AutoStartTimer(parent, config.getAutoStartTimerSeconds(), commands);
             timer.startTimer();
         }
 
@@ -407,6 +430,7 @@ public class ColorTeamingEntryCommand implements TabExecutor {
      */
     private boolean doClose(CommandSender sender, Command command, String label, String[] args) {
 
+        // 既にクローズなら、エラー終了
         if ( !parent.isOpen() ) {
             sendErrorMessage(sender, "error_already_close");
             return true;
@@ -432,7 +456,7 @@ public class ColorTeamingEntryCommand implements TabExecutor {
         parent.setOpen(false);
 
         // 通知する
-        broadcastMessage("info_close");
+        broadcastInfoMessage("info_close");
 
         // タイマーが残っているなら、キャンセルして除去する
         if ( timer != null && !timer.isEnd() ) {
@@ -542,6 +566,19 @@ public class ColorTeamingEntryCommand implements TabExecutor {
             return;
         }
         Bukkit.broadcastMessage(Utility.replaceColorCode(msg));
+    }
+
+    /**
+     * 情報メッセージリソースを取得し、broadcastする
+     * @param key メッセージキー
+     * @param args メッセージの引数
+     */
+    private void broadcastInfoMessage(String key, Object... args) {
+        String msg = Messages.get(key, args);
+        if ( msg.equals("") ) {
+            return;
+        }
+        Bukkit.broadcastMessage(Utility.replaceColorCode(preinfo + msg));
     }
 
     /**

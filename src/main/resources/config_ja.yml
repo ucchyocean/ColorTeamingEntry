@@ -19,4 +19,13 @@ autoStartTimerPlayerNum: 5
 autoStartTimerSeconds: 30
 
 # 自動開始タイマーが、自動開始を実行した時に、一緒に実行するコマンドです。
+# /centry open コマンドを実行した時に使用されます。
 autoStartTimerCommands: ['timer start ColorTeaming']
+
+# 自動開始タイマーが、自動開始を実行した時に、一緒に実行するコマンドです。
+# /centry open (コンフィグ名) コマンドを実行した時に使用されます。
+# 例えば、config1 のコマンドを自動開始時に実行させたい場合は、
+# /centry open config1 コマンドでエントリー受け付けを開始してください。
+autoStartTimerCommandConfigs:
+  config1: ['timer start ColorTeaming1']
+  config2: ['timer start ColorTeaming2']

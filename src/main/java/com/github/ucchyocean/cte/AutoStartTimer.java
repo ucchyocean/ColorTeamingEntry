@@ -21,6 +21,7 @@ public class AutoStartTimer extends BukkitRunnable {
     private ColorTeamingEntry parent;
     private int secondsLeft;
     private List<String> commands;
+    private String preinfo;
 
     /**
      * コンストラクタ
@@ -30,6 +31,7 @@ public class AutoStartTimer extends BukkitRunnable {
         this.parent = parent;
         this.secondsLeft = seconds;
         this.commands = commands;
+        preinfo = Messages.get("prefix_info");
     }
 
     /**
@@ -43,7 +45,7 @@ public class AutoStartTimer extends BukkitRunnable {
 
             // キリのいいところで通知を送る
             if ( secondsLeft == 30 || secondsLeft == 15 || secondsLeft == 5 ) {
-                broadcastMessage("auto_start_timer_seconds", secondsLeft);
+                broadcastInfoMessage("auto_start_timer_seconds", secondsLeft);
             }
 
         } else {
@@ -66,12 +68,12 @@ public class AutoStartTimer extends BukkitRunnable {
      * @param key メッセージキー
      * @param args メッセージの引数
      */
-    private void broadcastMessage(String key, Object... args) {
+    private void broadcastInfoMessage(String key, Object... args) {
         String msg = Messages.get(key, args);
         if ( msg.equals("") ) {
             return;
         }
-        Bukkit.broadcastMessage(Utility.replaceColorCode(msg));
+        Bukkit.broadcastMessage(Utility.replaceColorCode(preinfo + msg));
     }
 
     /**
@@ -114,7 +116,7 @@ public class AutoStartTimer extends BukkitRunnable {
      */
     public void startTimer() {
         this.runTaskTimer(ColorTeamingEntry.getInstance(), 20, 20);
-        broadcastMessage("auto_start_timer_seconds", secondsLeft);
+        broadcastInfoMessage("auto_start_timer_seconds", secondsLeft);
     }
 
     /**
