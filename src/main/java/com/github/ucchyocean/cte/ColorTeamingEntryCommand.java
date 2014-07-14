@@ -295,11 +295,11 @@ public class ColorTeamingEntryCommand implements TabExecutor {
         StringBuffer buffer = new StringBuffer();
         for ( String name : parent.getParticipants() ) {
             Player player = getPlayerExact(name);
-            String color = (player != null) ? "" : ChatColor.GRAY.toString();
+            ChatColor color = (player != null) ? ChatColor.WHITE : ChatColor.GRAY;
             if ( count == 0 ) {
                 buffer.append(color + name);
             } else {
-                buffer.append(", " + name);
+                buffer.append(", " + color + name);
             }
             count++;
             if ( count >= 5 ) {
@@ -332,11 +332,11 @@ public class ColorTeamingEntryCommand implements TabExecutor {
         StringBuffer buffer = new StringBuffer();
         for ( String name : parent.getParticipants() ) {
             Player player = getPlayerExact(name);
-            String color = (player != null) ? "" : ChatColor.GRAY.toString();
+            ChatColor color = (player != null) ? ChatColor.WHITE : ChatColor.GRAY;
             if ( count == 0 ) {
                 buffer.append(color + name);
             } else {
-                buffer.append(", " + name);
+                buffer.append(", " + color + name);
             }
             count++;
             if ( count >= 5 ) {
