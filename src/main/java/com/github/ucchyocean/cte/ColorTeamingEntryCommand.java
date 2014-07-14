@@ -477,11 +477,11 @@ public class ColorTeamingEntryCommand implements TabExecutor {
      */
     private boolean doTeam(CommandSender sender, Command command, String label, String[] args) {
 
-        // 受け付けが開始されていないなら終了する
-        if ( !parent.isOpen() ) {
-            sendErrorMessage(sender, "error_closed_team");
-            return true;
-        }
+//        // 受け付けが開始されていないなら終了する
+//        if ( !parent.isOpen() ) {
+//            sendErrorMessage(sender, "error_closed_team");
+//            return true;
+//        }
 
         // 作成するチーム数
         int teamNum = 2;

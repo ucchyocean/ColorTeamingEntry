@@ -53,7 +53,7 @@ public class AutoStartTimer extends BukkitRunnable {
 
             // 自身のタスクを削除して、チーム分けを実行し、コマンドを実行する。
             this.cancel();
-            doTeam();
+            doTimerEndAction();
             for ( String command : commands ) {
                 if ( command.startsWith("/") ) {
                     command = command.substring(1); // スラッシュ削除
@@ -77,35 +77,39 @@ public class AutoStartTimer extends BukkitRunnable {
     }
 
     /**
-     * チーム分けを実行する
+     * タイマー終了時処理を実行する
      */
-    private void doTeam() {
+    private void doTimerEndAction() {
 
-        // オンラインの参加者リストを作成する
-        ArrayList<Player> players = new ArrayList<Player>();
-        ArrayList<String> offlines = new ArrayList<String>();
-        for ( String name : parent.getParticipants() ) {
-            Player player = getPlayerExact(name);
-            if ( player != null ) {
-                players.add(player);
-            } else {
-                offlines.add(name);
+        if ( parent.getCTEConfig().getAutoStartTimerMode() ==
+                AutoStartTimerMode.CLOSE_AND_TEAM ) {
+
+            // オンラインの参加者リストを作成する
+            ArrayList<Player> players = new ArrayList<Player>();
+            ArrayList<String> offlines = new ArrayList<String>();
+            for ( String name : parent.getParticipants() ) {
+                Player player = getPlayerExact(name);
+                if ( player != null ) {
+                    players.add(player);
+                } else {
+                    offlines.add(name);
+                }
             }
-        }
 
-        // この時点でオフラインだったプレイヤーは、リストから外す
-        for ( String name : offlines ) {
-            parent.removeParticipant(name);
-        }
+            // この時点でオフラインだったプレイヤーは、リストから外す
+            for ( String name : offlines ) {
+                parent.removeParticipant(name);
+            }
 
-        // リストの色を消す
-        for ( Player player : players ) {
-            player.setPlayerListName(player.getName());
-        }
+            // リストの色を消す
+            for ( Player player : players ) {
+                player.setPlayerListName(player.getName());
+            }
 
-        // チーム分けする
-        parent.getColorTeaming().makeColorTeams(players, 2);
-        //sendInfoMessage(sender, "info_team_done");
+            // チーム分けする
+            parent.getColorTeaming().makeColorTeams(players, 2);
+            //sendInfoMessage(sender, "info_team_done");
+        }
 
         // 受け付けを停止する
         parent.setOpen(false);

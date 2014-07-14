@@ -116,8 +116,7 @@ public class Utility {
      * @return 置き換え後の文字列
      */
     public static String replaceColorCode(String source) {
-
-        return source.replaceAll("&([0-9a-fk-or])", "\u00A7$1");
+        return ChatColor.translateAlternateColorCodes('&', source);
     }
 
     /**
@@ -126,7 +125,6 @@ public class Utility {
      * @return 整数に変換可能かどうか
      */
     public static boolean tryIntParse(String source) {
-
         return source.matches("^-?[0-9]+$");
     }
 

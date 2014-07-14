@@ -25,6 +25,7 @@ public class ColorTeamingEntryConfig {
     private int autoStartTimerSeconds;
     private List<String> autoStartTimerCommands;
     private HashMap<String, List<String>> autoStartTimerCommandConfigs;
+    private AutoStartTimerMode autoStartTimerMode;
 
     /**
      * config.yml をロードします。
@@ -53,6 +54,8 @@ public class ColorTeamingEntryConfig {
         conf.autoStartTimerPlayerNum = config.getInt("autoStartTimerPlayerNum", 5);
         conf.autoStartTimerSeconds = config.getInt("autoStartTimerSeconds", 30);
         conf.autoStartTimerCommands = config.getStringList("autoStartTimerCommands");
+        conf.autoStartTimerMode = AutoStartTimerMode.getFromName(
+                config.getString("autoStartTimerMode"), AutoStartTimerMode.CLOSE_AND_TEAM);
 
         // config.getValues() でまとめて取得できるけど、後でキャスト面倒なので、
         // 1つずつ取得します。。。
@@ -108,5 +111,12 @@ public class ColorTeamingEntryConfig {
      */
     public HashMap<String, List<String>> getAutoStartTimerCommandConfigs() {
         return autoStartTimerCommandConfigs;
+    }
+
+    /**
+     * @return autoStartTimerMode
+     */
+    public AutoStartTimerMode getAutoStartTimerMode() {
+        return autoStartTimerMode;
     }
 }
