@@ -31,6 +31,9 @@ autoStartTimerCommandConfigs:
   config2: ['timer start ColorTeaming2']
 
 # 自動開始タイマーの動作モード設定です。
-# CLOSE_ONLY -> 自動開始を実行した時に、参加受け付けを締め切るだけのモード
-# CLOSE_AND_TEAM -> 自動開始を実行した時に、参加受け付けを締め切り、さらにチーム分けを行うモード
+# NOTHING -> 自動開始を実行した時に、何もしないモード。
+#     autoStartTimerCommands が設定されているなら、コマンドの実行のみが行われます。
+# CLOSE_ONLY -> 自動開始を実行した時に、参加受け付けを締め切るモード。
+# CLOSE_AND_TEAM -> 自動開始を実行した時に、参加受け付けを締め切り、
+#     さらにチーム分けを行うモード(デフォルト)。
 autoStartTimerMode: CLOSE_AND_TEAM

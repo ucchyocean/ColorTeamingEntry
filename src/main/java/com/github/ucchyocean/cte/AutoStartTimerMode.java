@@ -11,6 +11,9 @@ package com.github.ucchyocean.cte;
  */
 public enum AutoStartTimerMode {
 
+    /** 何もしない */
+    NOTHING,
+
     /** 参加受け付けを締め切るだけ */
     CLOSE_ONLY,
 

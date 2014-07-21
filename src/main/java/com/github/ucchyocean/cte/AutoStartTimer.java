@@ -111,8 +111,12 @@ public class AutoStartTimer extends BukkitRunnable {
             //sendInfoMessage(sender, "info_team_done");
         }
 
-        // 受け付けを停止する
-        parent.setOpen(false);
+        if ( parent.getCTEConfig().getAutoStartTimerMode() !=
+                AutoStartTimerMode.NOTHING ) {
+
+            // 受け付けを停止する
+            parent.setOpen(false);
+        }
     }
 
     /**
