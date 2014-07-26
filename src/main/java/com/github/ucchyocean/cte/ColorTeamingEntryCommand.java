@@ -31,6 +31,7 @@ public class ColorTeamingEntryCommand implements TabExecutor {
     private String preerr;
 
     private AutoStartTimer timer;
+    private List<String> timerCommands;
 
     /**
      * コンストラクタ
@@ -192,14 +193,10 @@ public class ColorTeamingEntryCommand implements TabExecutor {
         if ( config.isAutoStartTimer() && timer == null &&
                 config.getAutoStartTimerPlayerNum() <= parent.getParticipants().size() ) {
 
-            List<String> commands;
-            if ( args.length >= 2 ) {
-                commands = config.getAutoStartTimerCommandConfigs().get(args[1]);
-            } else {
-                commands = config.getAutoStartTimerCommands();
+            if ( timerCommands == null ) {
+                timerCommands = config.getAutoStartTimerCommands();
             }
-
-            timer = new AutoStartTimer(parent, config.getAutoStartTimerSeconds(), commands);
+            timer = new AutoStartTimer(parent, config.getAutoStartTimerSeconds(), timerCommands);
             timer.startTimer();
         }
 
@@ -378,6 +375,13 @@ public class ColorTeamingEntryCommand implements TabExecutor {
             return true;
         }
 
+        // タイマーに使用するコマンドを記録しておく
+        if ( args.length >= 2 && config.isAutoStartTimer() ) {
+            timerCommands = config.getAutoStartTimerCommandConfigs().get(args[1]);
+        } else {
+            timerCommands = config.getAutoStartTimerCommands();
+        }
+
         // この時点でオンラインだったリストプレイヤーは、名前色を付ける
         ArrayList<String> offlines = new ArrayList<String>();
         for ( String name : parent.getParticipants() ) {
@@ -406,14 +410,7 @@ public class ColorTeamingEntryCommand implements TabExecutor {
         if ( config.isAutoStartTimer() &&
                 config.getAutoStartTimerPlayerNum() <= parent.getParticipants().size() ) {
 
-            List<String> commands;
-            if ( args.length >= 2 ) {
-                commands = config.getAutoStartTimerCommandConfigs().get(args[1]);
-            } else {
-                commands = config.getAutoStartTimerCommands();
-            }
-
-            timer = new AutoStartTimer(parent, config.getAutoStartTimerSeconds(), commands);
+            timer = new AutoStartTimer(parent, config.getAutoStartTimerSeconds(), timerCommands);
             timer.startTimer();
         }
 

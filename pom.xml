@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.github.ucchyocean</groupId>
   <artifactId>ColorTeamingEntry</artifactId>
-  <version>1.0.4</version>
+  <version>1.0.5</version>
 
   <licenses>
     <license>
@@ -49,6 +49,25 @@
             <phase>package</phase>
             <goals>
               <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>2.2.1</version>
+        <configuration>
+          <finalName>${project.artifactId}-${project.version}</finalName>
+          <descriptors>
+            <descriptor>distribution.xml</descriptor>
+          </descriptors>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>deploy</phase>
+            <goals>
+              <goal>assembly</goal>
             </goals>
           </execution>
         </executions>
