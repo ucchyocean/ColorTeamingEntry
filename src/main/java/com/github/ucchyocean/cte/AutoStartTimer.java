@@ -88,7 +88,7 @@ public class AutoStartTimer extends BukkitRunnable {
             ArrayList<Player> players = new ArrayList<Player>();
             ArrayList<String> offlines = new ArrayList<String>();
             for ( String name : parent.getParticipants() ) {
-                Player player = getPlayerExact(name);
+                Player player = Utility.getPlayerExact(name);
                 if ( player != null ) {
                     players.add(player);
                 } else {
@@ -140,19 +140,5 @@ public class AutoStartTimer extends BukkitRunnable {
      */
     public boolean isEnd() {
         return secondsLeft < 0;
-    }
-
-    /**
-     * 指定されたプレイヤー名に一致するプレイヤーを返す
-     * @param name プレイヤー名
-     * @return プレイヤー
-     */
-    private Player getPlayerExact(String name) {
-        for ( Player player : Bukkit.getOnlinePlayers() ) {
-            if ( player.getName().equals(name) ) {
-                return player;
-            }
-        }
-        return null;
     }
 }

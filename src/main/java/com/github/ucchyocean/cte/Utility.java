@@ -15,7 +15,9 @@ import java.io.OutputStreamWriter;
 import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 
 /**
  * ユーティリティクラス
@@ -196,5 +198,15 @@ public class Utility {
         } else {
             return false;
         }
+    }
+
+    /**
+     * 指定されたプレイヤー名に一致するプレイヤーを返す
+     * @param name プレイヤー名
+     * @return プレイヤー
+     */
+    @SuppressWarnings("deprecation")
+    public static Player getPlayerExact(String name) {
+        return Bukkit.getPlayerExact(name);
     }
 }

@@ -13,6 +13,8 @@ commands:
            /<command> join - ゲームにエントリーする
            /<command> leave - ゲームのエントリーから離脱する
            /<command> list - ゲームにエントリーしているメンバーの一覧を表示する
+           /<command> join all - 全プレイヤーをエントリーさせる
+           /<command> leave all - 全プレイヤーをエントリーから離脱させる
            /<command> announce - ゲームにエントリーしているメンバーをアナウンスする
            /<command> open [CommandConfigName] - ゲームのエントリーを開始する
            /<command> close - ゲームのエントリーを終了する
@@ -47,6 +49,12 @@ permissions:
     description: Allows to use join command for other player.
     default: op
   centry.leave.other:
+    description: Allows to use leave command for other player.
+    default: op
+  centry.join.all:
+    description: Allows to use join command for other player.
+    default: op
+  centry.leave.all:
     description: Allows to use leave command for other player.
     default: op
   centry.announce:
@@ -85,9 +93,11 @@ permissions:
       centry.join: true
       centry.join.self: true
       centry.join.other: true
+      centry.join.all: true
       centry.leave: true
       centry.leave.self: true
       centry.leave.other: true
+      centry.leave.all: true
       centry.list: true
       centry.announce: true
       centry.open: true

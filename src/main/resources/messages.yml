@@ -1,6 +1,6 @@
 # ${project.name} v${project.version}
 # @author     ucchy
-# @license    GPLv3
+# @license    LGPLv3
 # @copyright  Copyright ucchy 2014
 
 prefix_error: '&6[CTE]&c'
@@ -12,8 +12,10 @@ error_no_permission: 'コマンドを実行する権限 %s がありません。
 error_not_ingame: '/%s %s  はゲーム内でしか実行できません。'
 error_already_join: 'あなたは、既に参加しています。'
 error_already_join_other: '%s は、既に参加しています。'
+error_already_join_all: '既に全プレイヤーが参加しています。'
 error_already_leave: 'あなたは、エントリーしていません。'
 error_already_leave_other: '%s は、既に退出しています。'
+error_already_leave_all: '既に全プレイヤー退出しています。'
 error_already_open: '既に受け付けを開始しています。'
 error_already_close: '既に受け付けを終了しています。'
 error_not_exist_config: '指定されたコマンドコンフィグ名は無効です。'
@@ -24,8 +26,10 @@ error_too_few_player: 'プレイヤーが少なすぎてチーム分けできま
 
 info_join: 'ゲームにエントリーしました。'
 info_join_other: '%s を参加させました。'
+info_join_all: '全プレイヤーを参加させました。'
 info_leave: 'ゲームから退出しました。'
 info_leave_other: '%s を退出させました。'
+info_leave_all: '全プレイヤーを退出させました。'
 info_team_done: '参加者をチーム分けしました。'
 info_reload: '設定ファイルを再読み込みしました。'
 
@@ -36,7 +40,7 @@ info_open3: '/centry leave を実行すると、エントリーを離脱でき�
 # info_open2: '[leave]の看板を叩くと、エントリーを離脱できます。'
 info_close: 'エントリーの受け付けを締め切りました。'
 
-list_first_line: '&5========= 参加者リスト ========'
+list_first_line: '&5========= 参加者(%d人) ========'
 list_last_line: '&5==============================='
 
 auto_start_timer_seconds: '自動開始まであと %d秒'

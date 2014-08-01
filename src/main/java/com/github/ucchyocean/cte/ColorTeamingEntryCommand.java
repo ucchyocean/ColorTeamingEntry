@@ -58,31 +58,33 @@ public class ColorTeamingEntryCommand implements TabExecutor {
             return false;
         }
 
-        if ( !isValidCommand(args[0]) ) {
+        String com = args[0].toLowerCase();
+
+        if ( !isValidCommand(com) ) {
             return false;
         }
 
-        if ( !sender.hasPermission("centry." + args[0]) ) {
+        if ( !sender.hasPermission("centry." + com) ) {
             sendErrorMessage(sender,
-                    "error_no_permission", "centry." + args[0]);
+                    "error_no_permission", "centry." + com);
             return true;
         }
 
-        if ( args[0].equalsIgnoreCase("join") ) {
+        if ( com.equals("join") ) {
             return doJoin(sender, command, label, args);
-        } else if ( args[0].equalsIgnoreCase("leave") ) {
+        } else if ( com.equals("leave") ) {
             return doLeave(sender, command, label, args);
-        } else if ( args[0].equalsIgnoreCase("list") ) {
+        } else if ( com.equals("list") ) {
             return doList(sender, command, label, args);
-        } else if ( args[0].equalsIgnoreCase("announce") ) {
+        } else if ( com.equals("announce") ) {
             return doAnnounce(sender, command, label, args);
-        } else if ( args[0].equalsIgnoreCase("open") ) {
+        } else if ( com.equals("open") ) {
             return doOpen(sender, command, label, args);
-        } else if ( args[0].equalsIgnoreCase("close") ) {
+        } else if ( com.equals("close") ) {
             return doClose(sender, command, label, args);
-        } else if ( args[0].equalsIgnoreCase("team") ) {
+        } else if ( com.equals("team") ) {
             return doTeam(sender, command, label, args);
-        } else if ( args[0].equalsIgnoreCase("reload") ) {
+        } else if ( com.equals("reload") ) {
             return doReload(sender, command, label, args);
         }
 
@@ -118,6 +120,26 @@ public class ColorTeamingEntryCommand implements TabExecutor {
             return candidates;
         }
 
+
+        // 第1引数がjoinまたはleaveで、第2引数で補完された場合、プレイヤー名＋allで補完
+        if ( args.length == 2 &&
+                ( args[0].equalsIgnoreCase("join") || args[0].equalsIgnoreCase("leave") ) ) {
+            String pre = args[1];
+            ArrayList<String> candidates = new ArrayList<String>();
+            if ( "all".startsWith(pre) &&
+                    sender.hasPermission("centry." + args[0].toLowerCase() + ".all") ) {
+                candidates.add("all");
+            }
+            if ( sender.hasPermission("centry." + args[0].toLowerCase() + ".other") ) {
+                for ( Player player : Bukkit.getOnlinePlayers() ) {
+                    if ( player.getName().startsWith(pre) ) {
+                        candidates.add(player.getName());
+                    }
+                }
+            }
+            return candidates;
+        }
+
         // その他の場合はnullを返してデフォルト動作（プレイヤー名で補完）
         return null;
     }
@@ -136,6 +158,7 @@ public class ColorTeamingEntryCommand implements TabExecutor {
 
         // 指定引数の解析
         if ( args.length == 1 ) {
+            // 自分がエントリーする
 
             if ( !sender.hasPermission("centry.join.self") ) {
                 sendErrorMessage(sender,
@@ -164,7 +187,37 @@ public class ColorTeamingEntryCommand implements TabExecutor {
                 sendInfoMessage(sender, "info_join");
             }
 
+        } else if ( args[1].equalsIgnoreCase("all") ) {
+            // 全プレイヤーをエントリーさせる
+
+            if ( !sender.hasPermission("centry.join.all") ) {
+                sendErrorMessage(sender,
+                        "error_no_permission", "centry.join.all");
+                return true;
+            }
+
+            if ( !parent.isOpen() ) {
+                sendErrorMessage(sender, "error_closed");
+                return true;
+            }
+
+            boolean result = false;
+            for ( Player player : Bukkit.getOnlinePlayers() ) {
+                if ( parent.addParticipant(player) ) {
+                    result = true;
+                    sendInfoMessage(player, "info_join");
+                }
+            }
+
+            if ( !result ) {
+                sendErrorMessage(sender, "error_already_join_all");
+                return true;
+            } else {
+                sendInfoMessage(sender, "info_join_all");
+            }
+
         } else {
+            // 指定した人をエントリーさせる
 
             if ( !sender.hasPermission("centry.join.other") ) {
                 sendErrorMessage(sender,
@@ -172,7 +225,7 @@ public class ColorTeamingEntryCommand implements TabExecutor {
                 return true;
             }
 
-            target = getPlayerExact(args[1]);
+            target = Utility.getPlayerExact(args[1]);
             if ( target == null ) {
                 sendErrorMessage(sender, "error_player_not_found");
                 return true;
@@ -217,6 +270,7 @@ public class ColorTeamingEntryCommand implements TabExecutor {
 
         // 指定引数の解析
         if ( args.length == 1 ) {
+            // 自分がエントリーから離脱する
 
             if ( !sender.hasPermission("centry.leave.self") ) {
                 sendErrorMessage(sender,
@@ -240,7 +294,32 @@ public class ColorTeamingEntryCommand implements TabExecutor {
                 sendInfoMessage(sender, "info_leave");
             }
 
+        } else if ( args[1].equalsIgnoreCase("all") ) {
+            // 全プレイヤーを離脱させる
+
+            if ( !sender.hasPermission("centry.leave.all") ) {
+                sendErrorMessage(sender,
+                        "error_no_permission", "centry.leave.all");
+                return true;
+            }
+
+            if ( parent.getParticipants().size() <= 0 ) {
+                sendErrorMessage(sender, "error_already_leave_all");
+                return true;
+            }
+
+            ArrayList<String> participants = new ArrayList<String>(parent.getParticipants());
+            for ( String name : participants ) {
+                parent.removeParticipant(name);
+                Player player = Utility.getPlayerExact(name);
+                if ( player != null ) {
+                    sendInfoMessage(player, "info_leave");
+                }
+            }
+            sendInfoMessage(sender, "info_leave_all");
+
         } else {
+            // 指定したプレイヤーをエントリーから離脱させる
 
             if ( !sender.hasPermission("centry.leave.other") ) {
                 sendErrorMessage(sender,
@@ -248,7 +327,7 @@ public class ColorTeamingEntryCommand implements TabExecutor {
                 return true;
             }
 
-            target = getPlayerExact(args[1]);
+            target = Utility.getPlayerExact(args[1]);
             if ( target == null ) {
                 sendErrorMessage(sender, "error_player_not_found");
                 return true;
@@ -287,11 +366,11 @@ public class ColorTeamingEntryCommand implements TabExecutor {
     private boolean doList(CommandSender sender, Command command, String label, String[] args) {
 
         // 参加者リストを表示する
-        sendMessage(sender, "list_first_line");
+        sendMessage(sender, "list_first_line", parent.getParticipants().size());
         int count = 0;
         StringBuffer buffer = new StringBuffer();
         for ( String name : parent.getParticipants() ) {
-            Player player = getPlayerExact(name);
+            Player player = Utility.getPlayerExact(name);
             ChatColor color = (player != null) ? ChatColor.WHITE : ChatColor.GRAY;
             if ( count == 0 ) {
                 buffer.append(color + name);
@@ -324,11 +403,11 @@ public class ColorTeamingEntryCommand implements TabExecutor {
     private boolean doAnnounce(CommandSender sender, Command command, String label, String[] args) {
 
         // 参加者リストを表示する
-        broadcastMessage("list_first_line");
+        broadcastMessage("list_first_line", parent.getParticipants().size());
         int count = 0;
         StringBuffer buffer = new StringBuffer();
         for ( String name : parent.getParticipants() ) {
-            Player player = getPlayerExact(name);
+            Player player = Utility.getPlayerExact(name);
             ChatColor color = (player != null) ? ChatColor.WHITE : ChatColor.GRAY;
             if ( count == 0 ) {
                 buffer.append(color + name);
@@ -385,7 +464,7 @@ public class ColorTeamingEntryCommand implements TabExecutor {
         // この時点でオンラインだったリストプレイヤーは、名前色を付ける
         ArrayList<String> offlines = new ArrayList<String>();
         for ( String name : parent.getParticipants() ) {
-            Player player = getPlayerExact(name);
+            Player player = Utility.getPlayerExact(name);
             if ( player != null ) {
                 player.setPlayerListName(
                         parent.getCTEConfig().getEntryColor() + player.getName());
@@ -437,7 +516,7 @@ public class ColorTeamingEntryCommand implements TabExecutor {
         // オンラインだったプレイヤーは、名前色を消す
         ArrayList<String> offlines = new ArrayList<String>();
         for ( String name : parent.getParticipants() ) {
-            Player player = getPlayerExact(name);
+            Player player = Utility.getPlayerExact(name);
             if ( player != null ) {
                 player.setPlayerListName(player.getName());
             } else {
@@ -490,7 +569,7 @@ public class ColorTeamingEntryCommand implements TabExecutor {
         ArrayList<Player> players = new ArrayList<Player>();
         ArrayList<String> offlines = new ArrayList<String>();
         for ( String name : parent.getParticipants() ) {
-            Player player = getPlayerExact(name);
+            Player player = Utility.getPlayerExact(name);
             if ( player != null ) {
                 players.add(player);
             } else {
@@ -627,24 +706,10 @@ public class ColorTeamingEntryCommand implements TabExecutor {
      */
     private boolean isValidCommand(String command) {
         for ( String c : COMMANDS ) {
-            if ( c.equalsIgnoreCase(command) ) {
+            if ( c.equals(command) ) {
                 return true;
             }
         }
         return false;
-    }
-
-    /**
-     * 指定されたプレイヤー名に一致するプレイヤーを返す
-     * @param name プレイヤー名
-     * @return プレイヤー
-     */
-    private Player getPlayerExact(String name) {
-        for ( Player player : Bukkit.getOnlinePlayers() ) {
-            if ( player.getName().equals(name) ) {
-                return player;
-            }
-        }
-        return null;
     }
 }
