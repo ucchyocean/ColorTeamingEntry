@@ -243,7 +243,7 @@ public class ColorTeamingEntryCommand implements TabExecutor {
 
         // 自動開始タイマーが有効で、既定の参加人数を超えたなら、タイマーを開始する
         ColorTeamingEntryConfig config = parent.getCTEConfig();
-        if ( config.isAutoStartTimer() && timer == null &&
+        if ( config.isAutoStartTimer() && (timer == null || timer.isEnd()) &&
                 config.getAutoStartTimerPlayerNum() <= parent.getParticipants().size() ) {
 
             if ( timerCommands == null ) {
