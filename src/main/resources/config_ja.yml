@@ -37,3 +37,7 @@ autoStartTimerCommandConfigs:
 # CLOSE_AND_TEAM -> 自動開始を実行した時に、参加受け付けを締め切り、
 #     さらにチーム分けを行うモード(デフォルト)。
 autoStartTimerMode: CLOSE_AND_TEAM
+
+# ExpTimerでタイマーが動作しているときに、
+# /centry open でエントリー受け付けを開始可能にするかどうかを設定します。
+disableOpenOnRunningExpTimer: false

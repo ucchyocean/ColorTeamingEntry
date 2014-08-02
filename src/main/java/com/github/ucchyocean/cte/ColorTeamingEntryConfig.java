@@ -26,6 +26,7 @@ public class ColorTeamingEntryConfig {
     private List<String> autoStartTimerCommands;
     private HashMap<String, List<String>> autoStartTimerCommandConfigs;
     private AutoStartTimerMode autoStartTimerMode;
+    private boolean disableOpenOnRunningExpTimer;
 
     /**
      * config.yml をロードします。
@@ -56,6 +57,8 @@ public class ColorTeamingEntryConfig {
         conf.autoStartTimerCommands = config.getStringList("autoStartTimerCommands");
         conf.autoStartTimerMode = AutoStartTimerMode.getFromName(
                 config.getString("autoStartTimerMode"), AutoStartTimerMode.CLOSE_AND_TEAM);
+        conf.disableOpenOnRunningExpTimer =
+                config.getBoolean("disableOpenOnRunningExpTimer", false);
 
         // config.getValues() でまとめて取得できるけど、後でキャスト面倒なので、
         // 1つずつ取得します。。。
@@ -118,5 +121,12 @@ public class ColorTeamingEntryConfig {
      */
     public AutoStartTimerMode getAutoStartTimerMode() {
         return autoStartTimerMode;
+    }
+
+    /**
+     * @return disableOpenOnRunningExpTimer
+     */
+    public boolean isDisableOpenOnRunningExpTimer() {
+        return disableOpenOnRunningExpTimer;
     }
 }

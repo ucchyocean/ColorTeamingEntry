@@ -19,7 +19,7 @@ error_already_leave_all: '既に全プレイヤー退出しています。'
 error_already_open: '既に受け付けを開始しています。'
 error_already_close: '既に受け付けを終了しています。'
 error_not_exist_config: '指定されたコマンドコンフィグ名は無効です。'
-
+error_exptimer_working: 'タイマーが動作しているため、受け付けを開始できません。'
 error_player_not_found: '指定されたプレイヤーが見つかりません。'
 error_zero_player: 'プレイヤーが一人もいないのでチーム分けできません。'
 error_too_few_player: 'プレイヤーが少なすぎてチーム分けできません。'

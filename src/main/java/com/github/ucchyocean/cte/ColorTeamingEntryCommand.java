@@ -445,9 +445,18 @@ public class ColorTeamingEntryCommand implements TabExecutor {
             return true;
         }
 
+        // ExpTimerを確認する設定で、ExpTimerがロードされていて、
+        // タイマーが動作しているなら、エラー終了。
+        ColorTeamingEntryConfig config = parent.getCTEConfig();
+        if ( config.isDisableOpenOnRunningExpTimer() &&
+                parent.getExpTimer() != null &&
+                parent.getExpTimer().isTimerRunning() ) {
+            sendErrorMessage(sender, "error_exptimer_working");
+            return true;
+        }
+
         // 引数にコンフィグが指定されていて、
         // 自動開始タイマー有効かつコマンド設定名が無効なら、エラー終了
-        ColorTeamingEntryConfig config = parent.getCTEConfig();
         if ( args.length >= 2 && config.isAutoStartTimer() &&
                 !config.getAutoStartTimerCommandConfigs().containsKey(args[1]) ) {
             sendErrorMessage(sender, "error_not_exist_config");

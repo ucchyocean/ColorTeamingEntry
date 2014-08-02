@@ -4,6 +4,7 @@ main: com.github.ucchyocean.cte.ColorTeamingEntry
 description: ColorTeamingエントリーシステム
 author: ucchy
 depend: [ColorTeaming]
+softdepend: [ExpTimer]
 
 commands:
   colorentry:

@@ -29,6 +29,7 @@ public class ColorTeamingEntry extends JavaPlugin implements Listener {
     private ArrayList<String> participants;
     private boolean isOpen;
     private ColorTeamingBridge ctbridge;
+    private ExpTimerBridge etbridge;
     private ColorTeamingEntryCommand cecommand;
     private ColorTeamingEntryConfig config;
 
@@ -60,6 +61,13 @@ public class ColorTeamingEntry extends JavaPlugin implements Listener {
             return;
         }
         ctbridge = new ColorTeamingBridge(colorteaming);
+
+        // ExpTimerの取得、softdependなので取得できない場合がある。
+        // バージョンチェックはしない。(面倒なので)
+        if ( getServer().getPluginManager().isPluginEnabled("ExpTimer") ) {
+            Plugin exptimer = getServer().getPluginManager().getPlugin("ExpTimer");
+            etbridge = new ExpTimerBridge(exptimer);
+        }
 
         // コマンドの生成
         cecommand = new ColorTeamingEntryCommand(this);
@@ -155,6 +163,14 @@ public class ColorTeamingEntry extends JavaPlugin implements Listener {
      */
     protected ColorTeamingBridge getColorTeaming() {
         return ctbridge;
+    }
+
+    /**
+     * ExpTimerを取得します。
+     * @return
+     */
+    protected ExpTimerBridge getExpTimer() {
+        return etbridge;
     }
 
     /**
