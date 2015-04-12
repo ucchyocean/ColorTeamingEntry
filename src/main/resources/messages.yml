@@ -22,7 +22,6 @@ error_not_exist_config: '指定されたコマンドコンフィグ名は無効�
 error_exptimer_working: 'タイマーが動作しているため、受け付けを開始できません。'
 error_player_not_found: '指定されたプレイヤーが見つかりません。'
 error_zero_player: 'プレイヤーが一人もいないのでチーム分けできません。'
-error_too_few_player: 'プレイヤーが少なすぎてチーム分けできません。'
 
 info_join: 'ゲームにエントリーしました。'
 info_join_other: '%s を参加させました。'
@@ -37,7 +36,8 @@ info_open1: 'エントリーの受け付けを開始します。'
 info_open2: '/centry join を実行して、エントリーしてください。'
 # info_open2: '[entry]の看板を叩いて、エントリーしてください。'
 info_open3: '/centry leave を実行すると、エントリーを離脱できます。'
-# info_open2: '[leave]の看板を叩くと、エントリーを離脱できます。'
+# info_open3: '[leave]の看板を叩くと、エントリーを離脱できます。'
+
 info_close: 'エントリーの受け付けを締め切りました。'
 
 list_first_line: '&5========= 参加者(%d人) ========'

@@ -562,12 +562,6 @@ public class ColorTeamingEntryCommand implements TabExecutor {
      */
     private boolean doTeam(CommandSender sender, Command command, String label, String[] args) {
 
-//        // 受け付けが開始されていないなら終了する
-//        if ( !parent.isOpen() ) {
-//            sendErrorMessage(sender, "error_closed_team");
-//            return true;
-//        }
-
         // 作成するチーム数
         int teamNum = 2;
         if ( args.length >= 2 && args[1].matches("[2-9]") ) {
@@ -594,12 +588,6 @@ public class ColorTeamingEntryCommand implements TabExecutor {
         // 誰も居ないなら終了する
         if ( players.size() == 0 ) {
             sendErrorMessage(sender, "error_zero_player");
-            return true;
-        }
-
-        // プレイヤーが足りないなら終了する。
-        if ( players.size() < teamNum ) {
-            sendErrorMessage(sender, "error_too_few_player");
             return true;
         }
 
