@@ -9,6 +9,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -33,12 +34,18 @@ public class ColorTeamingEntry extends JavaPlugin implements Listener {
     private ColorTeamingEntryCommand cecommand;
     private ColorTeamingEntryConfig config;
 
+    private String preinfo;
+
+    private AutoStartTimer timer;
+    private List<String> timerCommands;
+
     /**
      * コンストラクタ
      */
     public ColorTeamingEntry() {
         instance = this;
         participants = new ArrayList<String>();
+        preinfo = Messages.get("prefix_info");
     }
 
     /**
@@ -111,6 +118,13 @@ public class ColorTeamingEntry extends JavaPlugin implements Listener {
         if ( !participants.contains(player.getName()) ) {
             participants.add(player.getName());
             player.setPlayerListName(config.getEntryColor() + player.getName());
+
+            // 自動開始タイマーが有効で、既定の参加人数を超えたなら、タイマーを開始する
+            if ( config.isAutoStartTimer() && (timer == null || timer.isEnd()) &&
+                    config.getAutoStartTimerPlayerNum() <= participants.size() ) {
+                startTimer();
+            }
+
             return true;
         }
         return false;
@@ -125,6 +139,13 @@ public class ColorTeamingEntry extends JavaPlugin implements Listener {
         if ( participants.contains(player.getName()) ) {
             participants.remove(player.getName());
             player.setPlayerListName(player.getName());
+
+            // 自動開始タイマーが動作していて、既定の参加人数を下回ったなら、タイマーをキャンセルする
+            if ( timer != null && !timer.isEnd() &&
+                    config.getAutoStartTimerPlayerNum() > participants.size() ) {
+                cancelTimer(true);
+            }
+
             return true;
         }
         return false;
@@ -138,9 +159,67 @@ public class ColorTeamingEntry extends JavaPlugin implements Listener {
     public boolean removeParticipant(String name) {
         if ( participants.contains(name) ) {
             participants.remove(name);
+            Player player = Utility.getPlayerExact(name);
+            if ( player != null ) {
+                player.setPlayerListName(player.getName());
+            }
+
+            // 自動開始タイマーが動作していて、既定の参加人数を下回ったなら、タイマーをキャンセルする
+            if ( timer != null && !timer.isEnd() &&
+                    config.getAutoStartTimerPlayerNum() > participants.size() ) {
+                cancelTimer(true);
+            }
+
             return true;
         }
         return false;
+    }
+
+    /**
+     * 自動スタートタイマーを開始する
+     */
+    protected void startTimer() {
+        if ( timerCommands == null ) {
+            timerCommands = config.getAutoStartTimerCommands();
+        }
+        timer = new AutoStartTimer(this, config.getAutoStartTimerSeconds(), timerCommands);
+        timer.startTimer();
+    }
+
+    /**
+     * 自動スタートタイマーをキャンセルする
+     * @param doAnnounce キャンセルしたことをアナウンスするかどうか
+     */
+    protected void cancelTimer(boolean doAnnounce) {
+        if ( timer != null && !timer.isEnd() ) {
+            timer.cancel();
+            timer = null;
+            if ( doAnnounce ) {
+                broadcastInfoMessage("auto_start_timer_cancel");
+            }
+        }
+        timer = null;
+    }
+
+    /**
+     * タイマー満了時の実行コマンドセットを設定する
+     * @param commands
+     */
+    protected void setTimerCommands(List<String> commands) {
+        timerCommands = commands;
+    }
+
+    /**
+     * 情報メッセージリソースを取得し、broadcastする
+     * @param key メッセージキー
+     * @param args メッセージの引数
+     */
+    private void broadcastInfoMessage(String key, Object... args) {
+        String msg = Messages.get(key, args);
+        if ( msg.equals("") ) {
+            return;
+        }
+        Bukkit.broadcastMessage(Utility.replaceColorCode(preinfo + msg));
     }
 
     /**

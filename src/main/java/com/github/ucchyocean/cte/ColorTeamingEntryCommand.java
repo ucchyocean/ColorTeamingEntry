@@ -30,9 +30,6 @@ public class ColorTeamingEntryCommand implements TabExecutor {
     private String preinfo;
     private String preerr;
 
-    private AutoStartTimer timer;
-    private List<String> timerCommands;
-
     /**
      * コンストラクタ
      */
@@ -241,18 +238,6 @@ public class ColorTeamingEntryCommand implements TabExecutor {
             }
         }
 
-        // 自動開始タイマーが有効で、既定の参加人数を超えたなら、タイマーを開始する
-        ColorTeamingEntryConfig config = parent.getCTEConfig();
-        if ( config.isAutoStartTimer() && (timer == null || timer.isEnd()) &&
-                config.getAutoStartTimerPlayerNum() <= parent.getParticipants().size() ) {
-
-            if ( timerCommands == null ) {
-                timerCommands = config.getAutoStartTimerCommands();
-            }
-            timer = new AutoStartTimer(parent, config.getAutoStartTimerSeconds(), timerCommands);
-            timer.startTimer();
-        }
-
         return true;
     }
 
@@ -341,15 +326,6 @@ public class ColorTeamingEntryCommand implements TabExecutor {
                 sendInfoMessage(sender, "info_leave_other", target.getName());
                 sendInfoMessage(target, "info_leave");
             }
-        }
-
-        // 自動開始タイマーが動作していて、既定の参加人数を下回ったなら、タイマーをキャンセルする
-        ColorTeamingEntryConfig config = parent.getCTEConfig();
-        if ( timer != null && !timer.isEnd() &&
-                config.getAutoStartTimerPlayerNum() > parent.getParticipants().size() ) {
-            timer.cancel();
-            timer = null;
-            broadcastInfoMessage("auto_start_timer_cancel");
         }
 
         return true;
@@ -465,9 +441,9 @@ public class ColorTeamingEntryCommand implements TabExecutor {
 
         // タイマーに使用するコマンドを記録しておく
         if ( args.length >= 2 && config.isAutoStartTimer() ) {
-            timerCommands = config.getAutoStartTimerCommandConfigs().get(args[1]);
+            parent.setTimerCommands(config.getAutoStartTimerCommandConfigs().get(args[1]));
         } else {
-            timerCommands = config.getAutoStartTimerCommands();
+            parent.setTimerCommands(config.getAutoStartTimerCommands());
         }
 
         // この時点でオンラインだったリストプレイヤーは、名前色を付ける
@@ -497,9 +473,7 @@ public class ColorTeamingEntryCommand implements TabExecutor {
         // 自動開始タイマーが有効で、既に人数を超えているなら、タイマーを作成して開始する
         if ( config.isAutoStartTimer() &&
                 config.getAutoStartTimerPlayerNum() <= parent.getParticipants().size() ) {
-
-            timer = new AutoStartTimer(parent, config.getAutoStartTimerSeconds(), timerCommands);
-            timer.startTimer();
+            parent.startTimer();
         }
 
         return true;
@@ -540,14 +514,11 @@ public class ColorTeamingEntryCommand implements TabExecutor {
         // 募集しめきり
         parent.setOpen(false);
 
+        // タイマーが残っているなら、キャンセルして除去する
+        parent.cancelTimer(false);
+
         // 通知する
         broadcastInfoMessage("info_close");
-
-        // タイマーが残っているなら、キャンセルして除去する
-        if ( timer != null && !timer.isEnd() ) {
-            timer.cancel();
-            timer = null;
-        }
 
         return true;
     }
@@ -604,10 +575,7 @@ public class ColorTeamingEntryCommand implements TabExecutor {
         parent.setOpen(false);
 
         // タイマーが残っているなら、キャンセルして除去する
-        if ( timer != null && !timer.isEnd() ) {
-            timer.cancel();
-            timer = null;
-        }
+        parent.cancelTimer(false);
 
         return true;
     }
