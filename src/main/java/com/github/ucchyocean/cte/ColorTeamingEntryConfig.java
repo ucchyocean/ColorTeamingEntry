@@ -20,6 +20,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 public class ColorTeamingEntryConfig {
 
     private ChatColor entryColor;
+    private boolean leaveOnQuitServer;
     private boolean autoStartTimer;
     private int autoStartTimerPlayerNum;
     private int autoStartTimerSeconds;
@@ -51,6 +52,7 @@ public class ColorTeamingEntryConfig {
         ColorTeamingEntryConfig conf = new ColorTeamingEntryConfig();
         YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
         conf.entryColor = Utility.toChatColor(config.getString("entryColor", "gold"));
+        conf.leaveOnQuitServer = config.getBoolean("leaveOnQuitServer", true);
         conf.autoStartTimer = config.getBoolean("autoStartTimer", false);
         conf.autoStartTimerPlayerNum = config.getInt("autoStartTimerPlayerNum", 5);
         conf.autoStartTimerSeconds = config.getInt("autoStartTimerSeconds", 30);
@@ -79,6 +81,13 @@ public class ColorTeamingEntryConfig {
      */
     public ChatColor getEntryColor() {
         return entryColor;
+    }
+
+    /**
+     * @return leaveOnQuitServer
+     */
+    public boolean isLeaveOnQuitServer() {
+        return leaveOnQuitServer;
     }
 
     /**

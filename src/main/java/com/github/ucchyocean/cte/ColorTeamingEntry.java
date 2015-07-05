@@ -16,6 +16,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -231,8 +232,24 @@ public class ColorTeamingEntry extends JavaPlugin implements Listener {
 
         // エントリーしているプレイヤーなら、名前色を変更する
         Player player = event.getPlayer();
-        if ( participants.contains(player.getName()) ) {
+        if ( isOpen && participants.contains(player.getName()) ) {
             player.setPlayerListName(config.getEntryColor() + player.getName());
+        }
+    }
+
+    /**
+     * プレイヤーがサーバーから離脱したときに呼び出されるイベント
+     * @param event
+     */
+    @EventHandler
+    public void onQuit(PlayerQuitEvent event) {
+
+        // エントリーしているプレイヤーで、離脱したときにエントリー削除する設定なら、
+        // エントリーを削除する
+        Player player = event.getPlayer();
+        if ( isOpen && config.isLeaveOnQuitServer()
+                && participants.contains(player.getName()) ) {
+            removeParticipant(player.getName());
         }
     }
 

@@ -6,6 +6,10 @@
 # プレイヤーリスト上で、エントリーした人の名前に付ける色です。
 entryColor: 'gold'
 
+# エントリー済みでサーバーを離脱したプレイヤーを、エントリーから除去するかどうかです。
+# true = 除去する、false = 除去しない
+leaveOnQuitServer: true
+
 # 自動開始タイマー機能を使用するかどうかです。
 # true = 使用する、false = 使用しない
 autoStartTimer: false
