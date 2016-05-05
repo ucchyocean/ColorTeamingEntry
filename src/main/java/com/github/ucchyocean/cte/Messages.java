@@ -35,7 +35,7 @@ public class Messages {
 
         if ( !file.exists() ) {
             Utility.copyFileFromJar(ColorTeamingEntry.getPluginJarFile(),
-                    file, FILE_NAME, false);
+                    file, FILE_NAME);
         }
 
         defaultMessages = loadDefaultMessages();

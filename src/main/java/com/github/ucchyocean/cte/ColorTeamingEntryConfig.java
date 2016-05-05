@@ -45,7 +45,7 @@ public class ColorTeamingEntryConfig {
         // ファイルが無いなら作成する
         File file = new File(folder, "config.yml");
         if ( !file.exists() ) {
-            Utility.copyFileFromJar(jarFile, file, "config_ja.yml", false);
+            Utility.copyFileFromJar(jarFile, file, "config_ja.yml");
         }
 
         // 読み込み
