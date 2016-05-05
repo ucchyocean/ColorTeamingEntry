@@ -26,8 +26,6 @@ import org.bukkit.plugin.java.JavaPlugin;
  */
 public class ColorTeamingEntry extends JavaPlugin implements Listener {
 
-    private static ColorTeamingEntry instance;
-
     private ArrayList<String> participants;
     private boolean isOpen;
     private ColorTeamingBridge ctbridge;
@@ -44,7 +42,6 @@ public class ColorTeamingEntry extends JavaPlugin implements Listener {
      * コンストラクタ
      */
     public ColorTeamingEntry() {
-        instance = this;
         participants = new ArrayList<String>();
         preinfo = Messages.get("prefix_info");
     }
@@ -305,7 +302,7 @@ public class ColorTeamingEntry extends JavaPlugin implements Listener {
      * @return
      */
     protected static File getConfigFolder() {
-        return instance.getDataFolder();
+        return getInstance().getDataFolder();
     }
 
     /**
@@ -313,7 +310,7 @@ public class ColorTeamingEntry extends JavaPlugin implements Listener {
      * @return
      */
     protected static File getPluginJarFile() {
-        return instance.getFile();
+        return getInstance().getFile();
     }
 
     /**
@@ -321,6 +318,6 @@ public class ColorTeamingEntry extends JavaPlugin implements Listener {
      * @return インスタンス
      */
     protected static ColorTeamingEntry getInstance() {
-        return instance;
+        return (ColorTeamingEntry)Bukkit.getPluginManager().getPlugin("ColorTeamingEntry");
     }
 }
