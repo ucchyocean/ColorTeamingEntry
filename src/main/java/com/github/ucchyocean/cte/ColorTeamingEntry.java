@@ -39,19 +39,15 @@ public class ColorTeamingEntry extends JavaPlugin implements Listener {
     private List<String> timerCommands;
 
     /**
-     * コンストラクタ
-     */
-    public ColorTeamingEntry() {
-        participants = new ArrayList<String>();
-        preinfo = Messages.get("prefix_info");
-    }
-
-    /**
      * プラグインが有効化されるときに呼び出されるメソッド
      * @see org.bukkit.plugin.java.JavaPlugin#onEnable()
      */
     @Override
     public void onEnable() {
+
+        // 初期化
+        participants = new ArrayList<String>();
+        preinfo = Messages.get("prefix_info");
 
         // コンフィグのロード
         reloadCTEConfig();

@@ -3,12 +3,24 @@
 # @license    LGPLv3
 # @copyright  Copyright ucchy 2014
 
+
+
+# -------------------- 共通設定 --------------------
+
 # プレイヤーリスト上で、エントリーした人の名前に付ける色です。
 entryColor: 'gold'
 
 # エントリー済みでサーバーを離脱したプレイヤーを、エントリーから除去するかどうかです。
 # true = 除去する、false = 除去しない
 leaveOnQuitServer: true
+
+# ExpTimerでタイマーが動作しているときに、
+# /centry open でエントリー受け付けを開始可能にするかどうかを設定します。
+disableOpenOnRunningExpTimer: false
+
+
+
+# -------------------- 自動開始タイマー設定 --------------------
 
 # 自動開始タイマー機能を使用するかどうかです。
 # true = 使用する、false = 使用しない
@@ -30,6 +42,7 @@ autoStartTimerCommands: ['timer start ColorTeaming']
 # /centry open (コンフィグ名) コマンドを実行した時に使用されます。
 # 例えば、config1 のコマンドを自動開始時に実行させたい場合は、
 # /centry open config1 コマンドでエントリー受け付けを開始してください。
+# /centry open random コマンドで、いずれかの設定がランダムで選択されて使用されます。
 autoStartTimerCommandConfigs:
   config1: ['timer start ColorTeaming1']
   config2: ['timer start ColorTeaming2']
@@ -41,7 +54,3 @@ autoStartTimerCommandConfigs:
 # CLOSE_AND_TEAM -> 自動開始を実行した時に、参加受け付けを締め切り、
 #     さらにチーム分けを行うモード(デフォルト)。
 autoStartTimerMode: CLOSE_AND_TEAM
-
-# ExpTimerでタイマーが動作しているときに、
-# /centry open でエントリー受け付けを開始可能にするかどうかを設定します。
-disableOpenOnRunningExpTimer: false

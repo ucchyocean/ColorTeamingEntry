@@ -32,6 +32,7 @@ info_leave_all: '全プレイヤーを退出させました。'
 info_team_done: '参加者をチーム分けしました。'
 info_reload: '設定ファイルを再読み込みしました。'
 
+info_open_random: '次の対戦は、%s です。'
 info_open1: 'エントリーの受け付けを開始します。'
 info_open2: '/centry join を実行して、エントリーしてください。'
 # info_open2: '[entry]の看板を叩いて、エントリーしてください。'

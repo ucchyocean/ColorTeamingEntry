@@ -6,6 +6,7 @@
 package com.github.ucchyocean.cte;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.bukkit.Bukkit;
@@ -433,15 +434,23 @@ public class ColorTeamingEntryCommand implements TabExecutor {
 
         // 引数にコンフィグが指定されていて、
         // 自動開始タイマー有効かつコマンド設定名が無効なら、エラー終了
-        if ( args.length >= 2 && config.isAutoStartTimer() &&
-                !config.getAutoStartTimerCommandConfigs().containsKey(args[1]) ) {
+        boolean isRandom = args.length >= 2 && args[1].equalsIgnoreCase("random");
+        String configName = "";
+        if ( args.length >= 2 && config.isAutoStartTimer() && !isValidConfigName(config, args[1]) ) {
             sendErrorMessage(sender, "error_not_exist_config");
             return true;
         }
 
         // タイマーに使用するコマンドを記録しておく
         if ( args.length >= 2 && config.isAutoStartTimer() ) {
-            parent.setTimerCommands(config.getAutoStartTimerCommandConfigs().get(args[1]));
+            if ( isRandom ) {
+                ArrayList<String> temp = new ArrayList<String>(config.getAutoStartTimerCommandConfigs().keySet());
+                Collections.shuffle(temp);
+                configName = temp.get(0);
+            } else {
+                configName = args[1];
+            }
+            parent.setTimerCommands(config.getAutoStartTimerCommandConfigs().get(configName));
         } else {
             parent.setTimerCommands(config.getAutoStartTimerCommands());
         }
@@ -466,6 +475,9 @@ public class ColorTeamingEntryCommand implements TabExecutor {
         parent.setOpen(true);
 
         // 募集開始を通知する
+        if ( isRandom ) {
+            broadcastInfoMessage("info_open_random", configName);
+        }
         broadcastInfoMessage("info_open1");
         broadcastInfoMessage("info_open2");
         broadcastInfoMessage("info_open3");
@@ -676,5 +688,19 @@ public class ColorTeamingEntryCommand implements TabExecutor {
             }
         }
         return false;
+    }
+
+    /**
+     * 指定された文字列は、有効なコンフィグ名かどうかを判定します。
+     * @param config コンフィグ
+     * @param src 文字列
+     * @return 有効かどうか
+     */
+    private static boolean isValidConfigName(ColorTeamingEntryConfig config, String src) {
+
+        if ( src.equalsIgnoreCase("random") ) {
+            return config.getAutoStartTimerCommandConfigs().size() > 0;
+        }
+        return config.getAutoStartTimerCommandConfigs().containsKey(src);
     }
 }
