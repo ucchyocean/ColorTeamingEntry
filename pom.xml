@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.github.ucchyocean</groupId>
   <artifactId>ColorTeamingEntry</artifactId>
-  <version>1.1.1</version>
+  <version>1.1.2</version>
 
   <licenses>
     <license>
@@ -97,12 +97,12 @@
     <dependency>
       <groupId>org.bukkit</groupId>
       <artifactId>bukkit</artifactId>
-      <version>1.9-R0.1-SNAPSHOT</version>
+      <version>1.11.2-R0.1-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>com.github.ucchyocean</groupId>
       <artifactId>ColorTeaming</artifactId>
-      <version>2.6.1</version>
+      <version>2.6.2</version>
     </dependency>
     <dependency>
       <groupId>com.github.ucchyocean</groupId>

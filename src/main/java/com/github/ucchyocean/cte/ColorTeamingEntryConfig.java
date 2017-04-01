@@ -21,13 +21,15 @@ public class ColorTeamingEntryConfig {
 
     private ChatColor entryColor;
     private boolean leaveOnQuitServer;
+    private boolean disableOpenOnRunningExpTimer;
+    private List<String> commandsOnJoin;
+    private List<String> commandsOnLeave;
     private boolean autoStartTimer;
     private int autoStartTimerPlayerNum;
     private int autoStartTimerSeconds;
     private List<String> autoStartTimerCommands;
     private HashMap<String, List<String>> autoStartTimerCommandConfigs;
     private AutoStartTimerMode autoStartTimerMode;
-    private boolean disableOpenOnRunningExpTimer;
 
     /**
      * config.yml をロードします。
@@ -53,14 +55,17 @@ public class ColorTeamingEntryConfig {
         YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
         conf.entryColor = Utility.toChatColor(config.getString("entryColor", "gold"));
         conf.leaveOnQuitServer = config.getBoolean("leaveOnQuitServer", true);
+        conf.disableOpenOnRunningExpTimer =
+                config.getBoolean("disableOpenOnRunningExpTimer", false);
+        conf.commandsOnJoin = config.getStringList("commandsOnJoin");
+        conf.commandsOnLeave = config.getStringList("commandsOnLeave");
+
         conf.autoStartTimer = config.getBoolean("autoStartTimer", false);
         conf.autoStartTimerPlayerNum = config.getInt("autoStartTimerPlayerNum", 5);
         conf.autoStartTimerSeconds = config.getInt("autoStartTimerSeconds", 30);
         conf.autoStartTimerCommands = config.getStringList("autoStartTimerCommands");
         conf.autoStartTimerMode = AutoStartTimerMode.getFromName(
                 config.getString("autoStartTimerMode"), AutoStartTimerMode.CLOSE_AND_TEAM);
-        conf.disableOpenOnRunningExpTimer =
-                config.getBoolean("disableOpenOnRunningExpTimer", false);
 
         // config.getValues() でまとめて取得できるけど、後でキャスト面倒なので、
         // 1つずつ取得します。。。
@@ -88,6 +93,27 @@ public class ColorTeamingEntryConfig {
      */
     public boolean isLeaveOnQuitServer() {
         return leaveOnQuitServer;
+    }
+
+    /**
+     * @return disableOpenOnRunningExpTimer
+     */
+    public boolean isDisableOpenOnRunningExpTimer() {
+        return disableOpenOnRunningExpTimer;
+    }
+
+    /**
+     * @return commandsOnEntry
+     */
+    public List<String> getCommandsOnJoin() {
+        return commandsOnJoin;
+    }
+
+    /**
+     * @return commandsOnLeave
+     */
+    public List<String> getCommandsOnLeave() {
+        return commandsOnLeave;
     }
 
     /**
@@ -130,12 +156,5 @@ public class ColorTeamingEntryConfig {
      */
     public AutoStartTimerMode getAutoStartTimerMode() {
         return autoStartTimerMode;
-    }
-
-    /**
-     * @return disableOpenOnRunningExpTimer
-     */
-    public boolean isDisableOpenOnRunningExpTimer() {
-        return disableOpenOnRunningExpTimer;
     }
 }

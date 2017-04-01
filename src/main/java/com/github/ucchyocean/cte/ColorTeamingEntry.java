@@ -109,19 +109,34 @@ public class ColorTeamingEntry extends JavaPlugin implements Listener {
      * @return 追加したかどうか（既に追加されているプレイヤーなら、falseが返される）
      */
     public boolean addParticipant(Player player) {
-        if ( !participants.contains(player.getName()) ) {
-            participants.add(player.getName());
-            player.setPlayerListName(config.getEntryColor() + player.getName());
 
-            // 自動開始タイマーが有効で、既定の参加人数を超えたなら、タイマーを開始する
-            if ( config.isAutoStartTimer() && (timer == null || timer.isEnd()) &&
-                    config.getAutoStartTimerPlayerNum() <= participants.size() ) {
-                startTimer();
-            }
-
-            return true;
+        if ( participants.contains(player.getName()) ) {
+            return false;
         }
-        return false;
+
+        participants.add(player.getName());
+        player.setPlayerListName(config.getEntryColor() + player.getName());
+
+        // 自動開始タイマーが有効で、既定の参加人数を超えたなら、タイマーを開始する
+        if ( config.isAutoStartTimer() && (timer == null || timer.isEnd()) &&
+                config.getAutoStartTimerPlayerNum() <= participants.size() ) {
+            startTimer();
+        }
+
+        // 参加時コマンドを実行する
+        if ( config.getCommandsOnJoin().size() > 0 ) {
+            for ( String command : config.getCommandsOnJoin() ) {
+                command = command.trim().replace("%player%", player.getName());
+                if ( command.startsWith("/") ) {
+                    command = command.substring(1);
+                }
+                if ( command.length() > 0 ) {
+                    Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), command);
+                }
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -130,19 +145,34 @@ public class ColorTeamingEntry extends JavaPlugin implements Listener {
      * @return 削除したかどうか（既にリストに存在しないプレイヤーなら、falseが返される）
      */
     public boolean removeParticipant(Player player) {
-        if ( participants.contains(player.getName()) ) {
-            participants.remove(player.getName());
-            player.setPlayerListName(player.getName());
 
-            // 自動開始タイマーが動作していて、既定の参加人数を下回ったなら、タイマーをキャンセルする
-            if ( timer != null && !timer.isEnd() &&
-                    config.getAutoStartTimerPlayerNum() > participants.size() ) {
-                cancelTimer(true);
-            }
-
-            return true;
+        if ( !participants.contains(player.getName()) ) {
+            return false;
         }
-        return false;
+
+        participants.remove(player.getName());
+        player.setPlayerListName(player.getName());
+
+        // 自動開始タイマーが動作していて、既定の参加人数を下回ったなら、タイマーをキャンセルする
+        if ( timer != null && !timer.isEnd() &&
+                config.getAutoStartTimerPlayerNum() > participants.size() ) {
+            cancelTimer(true);
+        }
+
+        // 離脱時コマンドを実行する
+        if ( config.getCommandsOnJoin().size() > 0 ) {
+            for ( String command : config.getCommandsOnLeave() ) {
+                command = command.trim().replace("%player%", player.getName());
+                if ( command.startsWith("/") ) {
+                    command = command.substring(1);
+                }
+                if ( command.length() > 0 ) {
+                    Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), command);
+                }
+            }
+        }
+
+        return true;
     }
 
     /**
